@@ -1,101 +1,91 @@
 def add_time(start, duration, day=None):
 
-
 #getting elements of start time
-  start1Pos = start.find(':')
+  startHourPosition = start.find(':')
   space = start.find(' ')
-  start1 = start[:start1Pos]
-  start2 = start[start1Pos + 1 : space]
-  ampm = list(start[space + 1 :])
+  startHour = start[:startHourPosition]
+  startMinute = start[startHourPosition + 1 : space]
+  am_pm = list(start[space + 1 :])
   if day :
       day = day[0].upper() + day[1:].lower()
 
 
-
 #converting start string to int
-  start1 = int(start1)
-  start2 = int(start2)
-
+  startHour = int(startHour)
+  startMinute = int(startMinute)
 
 #getting elements of duration time
-  dur1Pos = duration.find(':')
-  dur1 = duration[ : dur1Pos]
-  dur2 = duration[dur1Pos + 1 : ]
-
+  durationHourPosition = duration.find(':')
+  durationHour = duration[ : durationHourPosition]
+  durationMinute = duration[durationHourPosition + 1 : ]
 
 #converting duration string to int
-  dur1 = int(dur1)
-  dur2 = int(dur2)
-
-
+  durationHour = int(durationHour)
+  durationMinute = int(durationMinute)
 
 #Calculating new hour
   newHour = 0
-  newHour = start1 + dur1
+  newHour = startHour + durationHour
   if newHour > 12 :
-     newHour = ((newHour % 12) - start1) + start1
+     newHour = ((newHour % 12) - startHour) + startHour
         
 #calculating new minute
   newMinute = 0
-  newMinute = start2 + dur2
+  newMinute = startMinute + durationMinute
   if newMinute > 59 :
-      newMinute = ((newMinute % 60) - start2) + start2
+      newMinute = ((newMinute % 60) - startMinute) + startMinute
       newHour = newHour + 1
     
       if newHour > 12 :
-          newHour = ((newHour % 12) - start1) + start1
+          newHour = ((newHour % 12) - startHour) + startHour
 
-#Getting new AM and PM
-        
-  minuteCheck = start2 + dur2
-  hourCheck = start1 + dur1
+#Getting new AM and PM      
+  minuteCheck = startMinute + durationMinute
+  hourCheck = startHour + durationHour
 
   if minuteCheck > 59 :
       hourCheck = hourCheck + 1
     
   if hourCheck < 12 :
-      newampm = ''
-      newampm = ampm[0] + ampm[1]
+      new_am_pm = ''
+      new_am_pm = am_pm[0] + am_pm[1]
     
   if hourCheck >= 12 and int(((hourCheck / 12)) % 2) == 1 :
-      newampm = ''
-      if ampm[0] == 'P' :
-          newampm = 'AM'
+      new_am_pm = ''
+      if am_pm[0] == 'P' :
+          new_am_pm = 'AM'
       else :
-          newampm = 'PM'
+          new_am_pm = 'PM'
 
   if hourCheck > 12 and int(((hourCheck / 12)) % 2) == 0 :
-      newampm = ''
-      newampm = ampm[0] + ampm[1]
+      new_am_pm = ''
+      new_am_pm = am_pm[0] + am_pm[1]
 
 
 #Determine number of days
   totalDays = 0
 
-  if start2 + dur2 > 59 :
-      dur1 += 1
+  if startMinute + durationMinute > 59 :
+      durationHour += 1
     
-  totalDays = (dur1 - start1) / 24
+  totalDays = (durationHour - startHour) / 24
 
 
-  if (ampm[0] == 'A' and dur1 < 12  ) or (ampm[0] == 'A' and 24 - start1 > dur1) or   (ampm[0] == 'P' and 12 - start1 > dur1) :
+  if (am_pm[0] == 'A' and durationHour < 12  ) or (am_pm[0] == 'A' and 24 - startHour > durationHour) or   (am_pm[0] == 'P' and 12 - startHour > durationHour) :
       totalDays = 0
     
-
-  if dur1 > 24 or (ampm[0] == 'A' and 24 - start1 <= dur1) or (ampm[0] == 'P' and 12   - start1 <= dur1) :
+  if durationHour > 24 or (am_pm[0] == 'A' and 24 - startHour <= durationHour) or (am_pm[0] == 'P' and 12   - startHour <= durationHour) :
       totalDays = 1
-      if dur1 > 24 :
-          totalDays += int((dur1 - (12 - start1)) / 24)
+      if durationHour > 24 :
+          totalDays += int((durationHour - (12 - startHour)) / 24)
 
 
-#Formatting days
+#Formatting and calculating days
   weekdays = {1 : "Sunday", 2 : "Monday", 3 : "Tuesday", 4 : "Wednesday",
               5 : "Thursday", 6 : "Friday", 7 : "Saturday"}
 
-
   if totalDays == 0 :
       day = day
-
      
   if totalDays >= 1 and day :
       for i in weekdays :
@@ -104,10 +94,7 @@ def add_time(start, duration, day=None):
               break
       day = weekdays[i]
 
-
 #Formatting Output
-
-
   if newHour == 0 :
       newHour = str("12")    
     
@@ -117,50 +104,30 @@ def add_time(start, duration, day=None):
   newHour = str(newHour)
   newMinute = str(newMinute)   
 
-
-
   if len(newMinute) == 1:
       newMinute = '0' + newMinute
 
-
-
-
-
+  #Returning New Time
   if totalDays < 1 and day:  
-      print(newHour + ":" + newMinute + ' ' + newampm + ', ' + 
-            day)
-      return (newHour + ":" + newMinute + ' ' + newampm + ', ' + 
+      return (newHour + ":" + newMinute + ' ' + new_am_pm + ', ' + 
             day)
     
   if totalDays < 1 and not day:  
-      print(newHour + ":" + newMinute + ' ' + newampm)
-      return (newHour + ":" + newMinute + ' ' + newampm)
+      return (newHour + ":" + newMinute + ' ' + new_am_pm)
+    
   if totalDays >= 1 and day :
       if totalDays == 1 :
-          print(newHour + ":" + newMinute + ' ' + newampm + ', '
-            + day + ' (next day)')
-          return(newHour + ":" + newMinute + ' ' + newampm + ', '
+          return(newHour + ":" + newMinute + ' ' + new_am_pm + ', '
             + day + ' (next day)')
       else :  
-          print(newHour + ":" + newMinute + ' ' + newampm + ', '
-            + day + ' (' + str(totalDays) + ' days later)')
-          return (newHour + ":" + newMinute + ' ' + newampm + ', '
-            + day + ' (' + str(totalDays) + ' days later)')
-          
+          return(newHour + ":" + newMinute + ' ' + new_am_pm + ', '
+            + day + ' (' + str(totalDays) + ' days later)')  
+        
   if totalDays >= 1 and not day :
       if totalDays == 1 :
-          print(newHour + ":" + newMinute + ' ' + newampm + ' '
-             + '(next day)')
-          return (newHour + ":" + newMinute + ' ' + newampm + ' '
-             + '(next day)')
-        
+          return(newHour + ":" + newMinute + ' ' + new_am_pm + ' '
+             + '(next day)')      
       else :
-          print(newHour + ":" + newMinute + ' ' + newampm + ' '
-             + '(' + str(totalDays) + ' days later)')
-          return(newHour + ":" + newMinute + ' ' + newampm + ' '
+          return(newHour + ":" + newMinute + ' ' + new_am_pm + ' '
              + '(' + str(totalDays) + ' days later)')
     
-
-
-
-  
